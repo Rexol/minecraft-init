@@ -25,6 +25,20 @@ Exit the console
 	
 	Ctrl+A D
 
+
+Editing config
+=====
+
+Depending on your server and file system configuration change the variables according to comments.
+
+IMPORTANT:
+  - by default script working for separate user called minecraft; if you want to make this user as a system user change line 44 in `minecraft`
+    from `su $USERNAME -s /bin/bash -c "$1"` on `sudo -u $USERNAME -s /bin/bash -c "$1"`
+    
+  - if you have error Rogue pidfile found at the startup check if `INVOCATION` string from `config.example` file works when you call it manually (don't forget replace variables on your actual values ex. `-Xmx$MAXMEM` -> `-Xmx2048M`). Some parameters could be not working with your java so just remove them.
+  - In my case on version `openjdk-17-jre-headless` and `craftbukkit1.18.0` my `INVOCATION` string looks like that `INVOCATION="java -Xmx$MAXMEM -Xms$INITMEM -XX:ParallelGCThreads=$CPU_COUNT -jar craftbukkit.jar nogui"`
+
+
 Setup
 =====
 
@@ -34,7 +48,7 @@ Setup
 		chmod 755  ~/minecraft-init/minecraft
 		sudo update-rc.d minecraft defaults
 
-2. Edit the variables in `config.example` to your needs and rename it to `config` (leaving it in the same folder as the original minecraft script)
+2. Edit the variables in `config.example` **(SEE EDITING CONFIG)** to your needs and rename it to `config` (leaving it in the same folder as the original minecraft script)
 
 3. Move your worlds to the folder specified by `WORLDSTORAGE`
 
@@ -51,8 +65,11 @@ Setup
 		55 	04 	*	*	*	/etc/init.d/minecraft log-roll
 		*/30 	* 	*	*	*	/etc/init.d/minecraft to-disk
 
+5. To run the server run:
 
-5. To load a world from ramdisk run:
+		/etc/init.d/minecraft start
+
+6. (Optional) To load a world from ramdisk run:
 
 		/etc/init.d/minecraft ramdisk WORLDNAME
 	
